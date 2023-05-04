@@ -7,15 +7,17 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import edu.guilford.CalPane.NumberFormatException;
+
 /**
  * JavaFX App
  */
-public class App extends Application {
+public class MainCalculator extends Application {
 
     private static Scene scene;
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, NumberFormatException {
         VBox root = new VBox();
         // add a title to the window
         stage.setTitle("Tipping Calculator!");
