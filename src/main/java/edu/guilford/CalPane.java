@@ -1,10 +1,13 @@
 package edu.guilford;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 
 public class CalPane extends GridPane {
@@ -15,7 +18,7 @@ public class CalPane extends GridPane {
     private Button calculateButton;
     private ImageView imageview;
     private Calculate calculate;
-    
+
     private Label billLabel;
     private Label tipLabel;
     private Label totalLabel;
@@ -24,6 +27,14 @@ public class CalPane extends GridPane {
     public CalPane(Calculate calculate) throws NumberFormatException {
         super();
         this.calculate = calculate;
+
+        setAlignment(Pos.CENTER);
+
+        // set the ColumnConstraints to fill the available space and keep the nodes
+        // centered
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setFillWidth(true);
+        col1.setHgrow(Priority.ALWAYS);
 
         // instantiate text fields
         billField = new TextField();
@@ -34,9 +45,10 @@ public class CalPane extends GridPane {
         // add labels to the pane
         billLabel = new Label("Bill Amount:");
         add(billLabel, 1, 0);
-        // add labels to the pane
+
         tipLabel = new Label("Tip Percent:");
         add(tipLabel, 1, 2);
+
         totalLabel = new Label("Total Amount:");
         add(totalLabel, 1, 3);
 
@@ -62,11 +74,15 @@ public class CalPane extends GridPane {
         calculateButton.setOnAction(event -> {
             try {
                 calculateTip();
+                billLabel.setText("Bill Amount:");
+                tipLabel.setText("Tip Percent:");
             } catch (NumberFormatException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 // display error in bill field
                 billLabel.setText("Error: Enter a numeric value");
+                tipLabel.setText("Error: Enter a numeric value");
+                // tipLabel.setTextFill(Color.RED);
+
             }
         });
 
@@ -99,12 +115,17 @@ public class CalPane extends GridPane {
 
     // method that calculates the tip
     private void calculateTip() throws NumberFormatException {
-        try {
 
-            double billAmount = Double.parseDouble(billField.getText());
-            System.out.println(billAmount);
+        try {
+            double billAmount = Double.parseDouble(billField.getText()); // negative number exception
+            if (billAmount < 0) {
+                throw new NumberFormatException();
+            }
             double tipPercentage = Double.parseDouble(tipField.getText());
-            System.out.println(tipPercentage);
+            if (tipPercentage < 0) {
+                throw new NumberFormatException();
+            }
+            // calculate the tip and total
             double tipAmount = billAmount * tipPercentage / 100;
             double totalAmount = billAmount + tipAmount;
 
@@ -124,19 +145,22 @@ public class CalPane extends GridPane {
             imageview.setPreserveRatio(true);
 
         } catch (NumberFormatException e) {
-            throw new CalPane.NumberFormatException();
-            //billLabel.setText("Error: Enter a numeric value");
-            // // display error in tip field
-            // tipField.setText("Error: Enter a numeric value");
+            e.printStackTrace();
+            // display error in bill field
+
+            billLabel.setTextFill(Color.RED); // this works but not the next line
+            tipLabel.setTextFill(Color.RED);
+            // change tip label to print error
+            tipLabel.setText("Error: Enter a numeric value"); // **************new text does not change??
+                                                              // ******************
+            billLabel.setText("Error: Enter a numeric value");
+
+            Label error = new Label("Error: Enter a postive numeric \nvalue for tip  and bill amount");
+            error.setTextFill(Color.RED);
+            add(error, 1, 4);
+            error.setStyle("-fx-font-size: 20px;");
 
         }
 
-    }
-
-    public class NumberFormatException extends Exception {
-
-        public NumberFormatException() {
-            super("Error: Enter a numeric value");
-        }
     }
 }
