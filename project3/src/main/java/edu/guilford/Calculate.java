@@ -5,6 +5,8 @@ public class Calculate {
     private double tip;
     private double total;
 
+
+
     // create constructor default
     public Calculate() {
         bill = 0;
@@ -17,8 +19,19 @@ public class Calculate {
         this.bill = bill;
         this.tip = tip;
         this.total = total;
+    
         // create getters and setters
 
+    }
+    //method to calculate the tip 
+    public double calculateTip(double bill, double tip) {
+        double tipAmount = bill * (tip / 100);
+        return tipAmount;
+    }
+    //method to calculate the total
+    public double calculateTotal(double bill, double tip) {
+        double totalAmount = bill + tip;
+        return totalAmount;
     }
 
     public double getBill() {
@@ -44,6 +57,9 @@ public class Calculate {
     public void setTotal(double total) {
         this.total = total;
     }
+   
+   
+    
 
 
     //to string method
